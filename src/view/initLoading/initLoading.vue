@@ -15,7 +15,7 @@ onMounted(() => {
             count.value -= 1
         } else {
             clearInterval(t)
-            router.push({ path: '/frame' })
+            router.push({ path: '/frame/dashboard' })
         }
     }, 1000)
 })
