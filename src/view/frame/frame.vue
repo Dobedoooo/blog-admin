@@ -3,6 +3,7 @@
         <nav class="frame-nav">
             <div class="frame-nav-logo">
                 <img src="../../assets/svgs/logo.svg">
+                <span class="name">Root Manager</span>
             </div>
             <FrameNavVue></FrameNavVue>
         </nav>
@@ -53,14 +54,20 @@ const coverEvent = (arg: CoverArgument = { type: 'plain', flag: true }): void =>
     background-color: #f7f9fb;
     box-sizing: border-box;
     .frame-nav-logo {
-        position: relative;
         height: var(--header-height);
         border-bottom: 1px solid var(--border-color);
+        padding: 7px 0 0 25px;
+        box-sizing: border-box;
         img {
-            position: absolute;
-            top: 7px;
-            left: 25px;
+            vertical-align: middle;
             width: 35px;
+            margin-right: 15px;
+        }
+        .name {
+            font-family: 'Lobster';
+            font-size: 25px;
+            color: #333;
+            vertical-align: middle;
         }
     }
     

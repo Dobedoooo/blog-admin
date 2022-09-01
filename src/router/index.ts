@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory, Router, RouteRecordRaw } from "vue-router";
 
-import initLoading from '../view/initLoading/initLoading.vue'
+import loading from '../view/initLoading/initLoading.vue'
 import frame from '../view/frame/frame.vue'
 import error from '../view/frame/error/error.vue'
 import note from '../view/frame/note.vue'
@@ -8,9 +8,9 @@ import idea from '../view/frame/idea.vue'
 import type_vue from '../view/frame/type/type.vue'
 
 const routes: RouteRecordRaw[] = [
-    { path: '/', name: 'initLoading', component: initLoading },
+    { path: '/' , name: 'loading', component: loading },
     { 
-        path: '/frame', name: 'frame', component: frame,
+        path: '/frame', name: 'frame', component: frame, redirect: '/frame/dashboard',
         children: [
             { path: 'dashboard', name: 'dashboard', component: error },
             { path: 'error', name: 'error', component: error },

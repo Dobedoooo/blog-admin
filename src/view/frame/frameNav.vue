@@ -118,8 +118,10 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+
 .frame-nav-content {
     padding: 0 25px;
+    font-weight: 500;
     .user {
         height: 60px;
         margin: 25px 0;

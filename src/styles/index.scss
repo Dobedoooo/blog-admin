@@ -1,32 +1,21 @@
+@use "sass:math";
 @font-face {
-    font-family: 'SF Pro Display';
+    font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
-    src: url(../assets/fonts/sf-pro-display_regular.woff2);
+    src: url(../assets/fonts/Inter-Regular.ttf);
 }
 @font-face {
-    font-family: 'SF Pro Display';
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    src: url(../assets/fonts/Inter-Medium.ttf);
+}
+@font-face {
+    font-family: 'Inter';
     font-style: normal;
     font-weight: 600;
-    src: url(../assets/fonts/sf-pro-display_semibold.woff2);
-}
-@font-face {
-    font-family: 'PingFang SC';
-    font-style: normal;
-    font-weight: 300;
-    src: url(../assets/fonts/PINGFANG_REGULAR.TTF);
-}
-@font-face {
-    font-family: 'PingFang SC';
-    font-style: normal;
-    font-weight: 400;
-    src: url(../assets/fonts/PINGFANG_MEDIUM.TTF);
-}
-@font-face {
-    font-family: 'PingFang SC';
-    font-style: normal;
-    font-weight: 600;
-    src: url(../assets/fonts/PINGFANG_BOLD.TTF);
+    src: url(../assets/fonts/Inter-SemiBold.ttf);
 }
 
 :root {
@@ -38,9 +27,8 @@ body {
 	width: 100%;
 	height: 100%;
 	// overflow: hidden;
-    font-family: 'PingFang SC';
+    font-family: 'Inter';
     min-width: 1200px;
-    font-weight: 600;
     --border-color: #f2f4f6;
 }
 
@@ -53,8 +41,8 @@ li { list-style: none; }
 }
 
 input {
-    font-family: 'PingFang SC';
-    font-weight: 600;
+    // font-family: 'Inter';
+    font-weight: 400;
     color: #777;
     padding: 0;
     background-color: transparent;
@@ -73,7 +61,7 @@ a {
 }
 
 img {
-    vertical-align: middle;
+    vertical-align: sub;
 }
 
 .width-100p { width: 100%; }
@@ -92,6 +80,13 @@ $mgl: 5;
     }
     $mgl: $mgl + 5
 }
+$mgr: 5;
+@while $mgr < 61 {
+    .mgr-#{$mgr} {
+        margin-right: #{$mgl}px;
+    }
+    $mgr: $mgr + 5
+}
 
 .ver-m { vertical-align: middle; }
 
@@ -100,18 +95,17 @@ $mgl: 5;
     border: 1px solid var(--border-color);
     box-shadow: 0px 0px 1px 0px rgba($color: #000000, $alpha: .1);
     border-radius: 10px;
-    // height: 1000px;
     .application-wrapper-header {
         padding: 25px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: 2px solid var(--border-color);
         .application-wrapper-title {
             line-height: 1;
             font-size: 24px;
             color: #333;
-            font-weight: 400;
+            font-weight: 500;
         }
         .application-function {
             --box-height: 30px;
@@ -154,6 +148,7 @@ $mgl: 5;
                 padding: 0 8px;
                 transition: all .15s;
                 color: #333;
+                font-weight: 500;
                 &:hover {
                     background-color: var(--border-color);
                     box-shadow: 0px 0px 5px 0px rgba($color: #000000, $alpha: .1);
@@ -174,11 +169,12 @@ $mgl: 5;
             color: #666;
             --cell-height: 40px;
             th {
-                border-bottom: 2px solid var(--border-color);
+                border-bottom: 1px solid var(--border-color);
                 height: var(--cell-height);
                 text-align: left;
                 color: #333;
                 padding-top: 25px;
+                font-weight: 500;
             }
             td {
                 border-bottom: 1px solid var(--border-color);

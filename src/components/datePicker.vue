@@ -2,7 +2,7 @@
     <div :class="{'date-picker-wrapper': true, 'open': pickerControl}" ref="box" @click="pickerSwitch">
         <div :style="{ width: `${width}px`, height: `${height}px` }" class="input-wrapper cur">
             <img src="../assets/svgs/application/date.svg" class="input-img">
-            <input class="input" v-model="date" readonly>
+            <input class="input" :value="computedDate" readonly>
         </div>
         <transition name="fade">
             <div
@@ -13,21 +13,21 @@
                 }"
             >
                 <ul class="year">
-                    <li v-for="item in yearAry" @click="pickYear(item)"
+                    <li v-for="item in yearAry" @click.stop="dateChange('y', item)"
                         :class="{'picked': year === item}"
                     >
                         <span>{{ item }}</span>
                     </li>
                 </ul>
                 <ul class="month">
-                    <li v-for="item in monthAry" @click="pickMonth(item)"
+                    <li v-for="item in monthAry" @click.stop="dateChange('m', item)"
                         :class="{'picked': month === item}"
                     >
                         <span>{{ item }}</span>
                     </li>
                 </ul>
                 <ul class="day">
-                    <li v-for="item in dayAry[month]" @click="pickDay(item)"
+                    <li v-for="item in dayAry[month - 1]" @click.stop="dateChange('d', item)"
                         :class="{'picked': day === item}"
                     >
                         <span>{{ item }}</span>
@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, Ref, ComputedRef, computed } from 'vue';
+import { onMounted, ref, Ref, ComputedRef, computed, watch } from 'vue';
 
 import { observer } from '../utils/globalClick'
 
@@ -47,17 +47,28 @@ interface Props {
     height?: number
     width?: number
     watchKey: string
+    date: Date
 }
-const {
+let {
     width = 300,
     height = 30,
-    watchKey
+    watchKey,
+    date
 } = defineProps<Props>()
 
-defineEmits([''])
+const emit = defineEmits(['update:date'])
 
 const pickerControl: Ref<boolean> = ref(false)
 const pickerSwitch = () => {
+    // 打开日期选择框时再进行初始化
+    if(yearAry.value.length === 0) {
+        yearAry.value = [2020, date.getFullYear()]
+        // yearAry.value = [date.getFullYear() - 1, date.getFullYear()]
+        dayAry.value = dayOfMonthInCurrentYear(date.getFullYear())
+        year.value = date.getFullYear()
+        month.value = date.getMonth() + 1
+        day.value = date.getDate()
+    }
     pickerControl.value = !pickerControl.value;
 }
 
@@ -65,9 +76,11 @@ const year: Ref<number> = ref(0)
 const yearAry: Ref<number[]> = ref([])
 const month: Ref<number> = ref(0)
 const monthAry: Ref<number[]> = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
-const day: Ref<number> = ref(0)
+const day: Ref<number> = ref(0) 
 const dayAry: Ref<number[]> = ref([])
-const date: ComputedRef<string> = computed((): string => `${year.value}/${month.value}/${day.value}`)
+const computedDate = computed(() => {
+    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
+})
 const dayOfMonthInCurrentYear = (year: number): number[] => {
     let feb = 28
     if((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
@@ -79,20 +92,29 @@ const dayOfMonthInCurrentYear = (year: number): number[] => {
 const box = ref()
 onMounted(() => {
     observer.watch(watchKey, box.value, function() { pickerControl.value = false })
-
-    const date = new Date()
-    year.value = date.getFullYear()
-    month.value = date.getMonth()
-    day.value = date.getDate()
-    yearAry.value = [year.value - 1 ,year.value]
-    dayAry.value = dayOfMonthInCurrentYear(year.value)
-
+    
 })
-
-const pickYear = (arg: number) => year.value = arg
-const pickMonth = (arg: number) => month.value = arg
-const pickDay = (arg: number) => day.value = arg
-
+// 日期溢出。有溢出时，先设置日再设置年、月
+const testDateOverflow = (callback: Function) => {
+    day.value > dayAry.value[month.value - 1] && date.setDate(day.value = dayAry.value[month.value - 1])
+    callback()
+}
+const dateChange = (type: 'y' | 'm' | 'd', data: number) => {
+    if(type === 'y') {
+        // TODO 日期溢出
+        year.value = data
+        dayAry.value = dayOfMonthInCurrentYear(data)
+        testDateOverflow(() => date.setFullYear(data))
+    } else if(type === 'm') {
+        // 日期溢出问题，有溢出时，先设置日再设置月
+        month.value = data
+        testDateOverflow(() => date.setMonth(data - 1))
+    } else if(type === 'd') {
+        day.value = data
+        date.setDate(data)
+    }
+    emit('update:date', new Date(date))
+}
 </script>
 
 <style lang="scss" scoped>
@@ -154,6 +176,7 @@ const pickDay = (arg: number) => day.value = arg
                 &.picked {
                     background-color: var(--border-color);
                     color: #333;
+                    font-weight: 500;
                 }
                 span {
                     display: inline-block;

@@ -1,6 +1,5 @@
 <template>
     <div :class="{'select-wrapper': true, 'open': listControl}" ref="box">
-            <!-- @blur="listSwitch" -->
         <input 
             class="input" 
             @click="listSwitch"
@@ -27,7 +26,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, Ref, ref, watchEffect } from 'vue';
+import { computed } from '@vue/reactivity';
+import { ComputedRef, onMounted, Ref, ref, watchEffect } from 'vue';
 
 import { observer } from '../utils/globalClick';
 
@@ -60,11 +60,12 @@ const listSwitch = () => {
 }
 
 //
-const status: Ref<'unselected' | 'selected'> = ref('unselected')
+const status: ComputedRef<'unselected' | 'selected'> = computed(() => {
+    return option ? 'selected' : 'unselected'
+})
 const clickOption = (e: Event, value: string) => {
     emit('update:option', value)
     listSwitch()
-    status.value = 'selected'
 }
 
 const box = ref()

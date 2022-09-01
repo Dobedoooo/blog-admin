@@ -1,12 +1,13 @@
 <template>
-    <div class="context-menu-wrapper" :style="{ right: `${x + 5}px`, top: `${y}px` }">
+    <div class="context-menu-wrapper" :style="{ transform: `translate(${-x - 5}px, ${y}px)` }">
         <ul>
             <li 
                 v-for="item in props.menu" 
                 :class="{ 'disabled': item.disabled }" 
-                @click="!item.disabled && item.handler()" 
+                @click="!item.disabled && item.handler(item.args)" 
                 :style="item.stytle"
-            >{{ item.name }}</li>
+                v-html="item.html"
+            ></li>
         </ul>
     </div>
 </template>
@@ -15,18 +16,17 @@
 import { computed, CSSProperties, ref, Ref } from 'vue';
 
 
-export interface MenuItem {
-    name: string
-    handler: (arg?: any) => void
+export interface MenuItem<T> {
+    html: string
+    args?: T
+    handler: Function
     stytle?: CSSProperties
     disabled?: boolean
 }
-export interface Menu {
-    [key: string]: MenuItem
-}
+export type Menu<T> = { [key: string]: MenuItem<T> } | null
 
 const props = defineProps<{
-    menu: Menu,
+    menu: Menu<unknown>,
     mouse: MouseEvent | null
 }>()
 
